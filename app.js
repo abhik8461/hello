@@ -1,18 +1,72 @@
 const express = require("express");
 const app = express();
-const path = require("path");
+const mongoose = require("mongoose");
+const User = require("./model");
 
-const port = process.env.PORT || 8500;
+app.use(express.json());
+
+const port = process.env.PORT || 4800;
+
+const url =
+  "mongodb+srv://ecommerce:euxp7tjnWs1yAQvs@cluster0.iwpzd4g.mongodb.net/crud?retryWrites=true&w=majority&appName=Cluster0";
+
+mongoose
+  .connect(url)
+  .then(() => {
+    console.log("db contacted");
+  })
+  .catch(() => {
+    console.log("failed to create");
+  });
 
 app.get("/", async function (req, res) {
-  await res.render("home");
+  try {
+    const user = await User.find({});
+    if (!user) {
+      return res.json({ message: "user not found" });
+    }
+    return res.json({ user: user });
+  } catch (error) {
+    return res.json({ error: error });
+  }
 });
 
-app.get("/about", async function (req, res) {});
-app.get("/contact", async function (req, res) {});
+app.post("/", async function (req, res) {
+  try {
+    const user = await User.create({
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
+    });
+    if (!user) {
+      return res.json({ message: "failed to created" });
+    }
+    return res.json({ message: "user cerated", user: user });
+  } catch (error) {
+    return res.json({ error: error });
+  }
+});
 
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
+app.patch("/:id", async function (req, res) {
+  try {
+    const user = await User.findByIdAndUpdate(
+      { _id: req.params.id },
+      { username: req.body.username }
+    );
+    return res.json({ message: "update successfully" });
+  } catch (error) {
+    return res.json({ error: error });
+  }
+});
+
+app.delete("/:id", async function (req, res) {
+  try {
+    const user = await User.deleteOne({ _id: req.params.id });
+    res.json({ message: "user deleted" });
+  } catch (error) {
+    return res.json({ error: error });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is on ${port}`);
