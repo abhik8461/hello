@@ -16,7 +16,7 @@ const url =
   "mongodb+srv://ecommerce:euxp7tjnWs1yAQvs@cluster0.iwpzd4g.mongodb.net/crud?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose
-  .connect(process.env.URL)
+  .connect("mongodb+srv://ecommerce:euxp7tjnWs1yAQvs@cluster0.iwpzd4g.mongodb.net/crud?retryWrites=true&w=majority&appName=Cluster0")
   .then(() => {
     console.log("db contacted");
   })
