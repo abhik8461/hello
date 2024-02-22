@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -7,11 +8,15 @@ app.use(express.json());
 
 const port = process.env.PORT || 4800;
 
+app.get("/test", async (req, res) => {
+  res.json({ message: "working" });
+});
+
 const url =
   "mongodb+srv://ecommerce:euxp7tjnWs1yAQvs@cluster0.iwpzd4g.mongodb.net/crud?retryWrites=true&w=majority&appName=Cluster0";
 
 mongoose
-  .connect(url)
+  .connect(process.env.URL)
   .then(() => {
     console.log("db contacted");
   })
